@@ -4,11 +4,12 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class Main {
 
     public static void main(String[] args) {
-        ArrayList<Integer> endStates = new ArrayList<>();
+        Set<Integer> endStates = new TreeSet<>();
         endStates.add(0);
         Set<String> terminals = new HashSet<>();
         terminals.add("a");
@@ -24,7 +25,10 @@ public class Main {
         paths.add(new Path(3, 1, "b"));
         DEA dea = new DEA(4, 0, endStates, terminals, paths);
         String input = JOptionPane.showInputDialog("Eingabe eines Wortes: ");
-        System.out.println(dea.checkWord(input));
+        if(input == null || input.equals("")) return;
+        boolean accepted = dea.checkWord(input);
+        JOptionPane.showMessageDialog(null, "<html>Dein Wort wird <u><b>" + (accepted ? "" : "nicht") + "</b></u> akzeptiert</html>");
+        main(args);
     }
 
 }

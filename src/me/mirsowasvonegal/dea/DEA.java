@@ -1,19 +1,16 @@
 package me.mirsowasvonegal.dea;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class DEA {
 
     private ArrayList<Integer> states = new ArrayList<>(); // Zustandsliste von 1-X
     private int startState; // Ein bestimmter Zustand
-    private ArrayList<Integer> endStates = new ArrayList<>(); // Teilmenge der Zustände
+    private Set<Integer> endStates = new TreeSet<>(); // Teilmenge der Zustände
     private Set<String> terminals = new HashSet<>();  // Kleinbuchstaben von a-z
     private ArrayList<Path> paths = new ArrayList<>();
 
-    public DEA(int stateCount, int startState, ArrayList<Integer> endStates, Set<String> terminals, ArrayList<Path> paths) {
+    public DEA(int stateCount, int startState, Set<Integer> endStates, Set<String> terminals, ArrayList<Path> paths) {
         for (int i = 0; i < stateCount; i++) {
             states.add(i);
         }
