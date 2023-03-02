@@ -8,9 +8,9 @@ public class DEA {
     private int startState; // Ein bestimmter Zustand
     private Set<Integer> endStates = new TreeSet<>(); // Teilmenge der Zustände
     private Set<String> terminals = new HashSet<>();  // Kleinbuchstaben von a-z
-    private ArrayList<Path> paths = new ArrayList<>();
+    private ArrayList<DEAPath> paths = new ArrayList<>();
 
-    public DEA(int stateCount, int startState, Set<Integer> endStates, Set<String> terminals, ArrayList<Path> paths) {
+    public DEA(int stateCount, int startState, Set<Integer> endStates, Set<String> terminals, ArrayList<DEAPath> paths) {
         for (int i = 0; i < stateCount; i++) {
             states.add(i);
         }
@@ -20,11 +20,14 @@ public class DEA {
         this.paths = paths;
     }
 
-    public boolean checkWord(String word) {
+    public boolean checkWord(String word) throws IllegalArgumentException {
         int state = startState;
         String[] characters = word.split("");
         for (int i = 0; i < characters.length; i++) {
-            Path path = getPathByStateAndTerminal(state, characters[i]);
+            if(!terminals.contains(characters[i])) {
+                throw new IllegalArgumentException();
+            }
+            DEAPath path = getPathByStateAndTerminal(state, characters[i]);
             if(path == null) return false;
             state = path.getToState();
             if((characters.length-1) == i) {
@@ -34,8 +37,8 @@ public class DEA {
         return endStates.contains(state);
     }
 
-    public Path getPathByStateAndTerminal(int state, String terminal) {
-        for (Path path : paths) {
+    public DEAPath getPathByStateAndTerminal(int state, String terminal) {
+        for (DEAPath path : paths) {
             if(path.getFromState() == state && path.getTerminal().equals(terminal)) {
                 return path;
             }

@@ -1,10 +1,17 @@
-package me.mirsowasvonegal.dea;
+package me.mirsowasvonegal.ka;
 
-public class Path {
+public class KAPath {
 
     private int fromState;
     private int toState;
     private String terminal;
+    private String top;
+    private Action action;
+
+    public enum Action {
+        ADD,
+        DELETE
+    }
 
     public int getFromState() {
         return fromState;
@@ -30,9 +37,27 @@ public class Path {
         this.terminal = terminal;
     }
 
-    public Path(int fromState, int toState, String terminal) {
+    public String getTop() {
+        return top;
+    }
+
+    public void setTop(String top) {
+        this.top = top;
+    }
+
+    public Action getAction() {
+        return action;
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
+    public KAPath(int fromState, int toState, String terminal, String top, Action action) {
         this.fromState = fromState;
         this.toState = toState;
         this.terminal = terminal;
+        this.top = top;
+        this.action = action;
     }
 }
