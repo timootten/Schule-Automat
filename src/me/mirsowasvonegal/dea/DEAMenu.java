@@ -64,7 +64,7 @@ public class DEAMenu {
             StringBuilder stateList = new StringBuilder();
             stateList.append("Deine verfügbaren Zustände: \n");
             for (int i = 0; i < stateCount; i++) {
-                stateList.append("\n- ").append(stateCount);
+                stateList.append("\n- ").append(i);
             }
             JOptionPane.showMessageDialog(null,stateList.toString());
             int startState = Integer.parseInt(JOptionPane.showInputDialog("Welcher Zustand soll dein Startzustand sein? (Ganzzahl)"));
@@ -83,7 +83,7 @@ public class DEAMenu {
             for (int i = 0; i < stateCount; i++) {
                 for (String terminal : terminals) {
                     int toState = Integer.parseInt(JOptionPane.showInputDialog(
-                            "Zustand: " + i + "\n" +
+                                    "Zustand: " + i + "\n" +
                                     "Terminal: " + terminal + "\n" +
                                     "Wohin soll man damit gehen?"));
                     paths.add(new DEAPath(i, toState, terminal));
