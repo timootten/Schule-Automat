@@ -1,4 +1,4 @@
-package me.mirsowasvonegal;
+package me.mirsowasvonegal.utils;
 
 import java.util.Set;
 import java.util.TreeSet;

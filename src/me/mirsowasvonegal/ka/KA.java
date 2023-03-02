@@ -30,22 +30,27 @@ public class KA {
     public boolean checkWord(String word) throws IllegalArgumentException {
         int state = startState;
         Stack stack = new Stack();
+        stack.push("k0");
         String[] characters = word.split("");
         for (int i = 0; i < characters.length; i++) {
-            if((!terminals.contains(characters[i])) && characters[i] != null) {
+            if(!terminals.contains(characters[i])) {
                 throw new IllegalArgumentException();
             }
             KAPath path = getPathByStateTerminalAndTop(state, characters[i], stack.top().toString());
             if(path == null) return false;
             state = path.getToState();
             if(path.getAction() == KAPath.Action.DELETE) {
-                if(stack.isEmpty()) return false;
+                if(stack.top().toString().equals("k0")) return false;
                 stack.pop();
             } else {
-                if(characters[i] != null) stack.push(characters[i]);
+                if(characters[i].equals("")) return false;
+                stack.push(characters[i]);
             }
         }
-        return endStates.contains(state) && stack.isEmpty();
+        KAPath path = getPathByStateTerminalAndTop(state, "", stack.top().toString());
+        if(path == null) return false;
+        state = path.getToState();
+        return endStates.contains(state);
     }
 
     public KAPath getPathByStateTerminalAndTop(int state, String terminal, String top) {

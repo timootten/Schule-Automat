@@ -1,6 +1,6 @@
 package me.mirsowasvonegal.dea;
 
-import me.mirsowasvonegal.Utils;
+import me.mirsowasvonegal.utils.Utils;
 
 import javax.swing.*;
 import java.util.*;

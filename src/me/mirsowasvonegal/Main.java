@@ -1,6 +1,7 @@
 package me.mirsowasvonegal;
 
 import me.mirsowasvonegal.dea.DEAMenu;
+import me.mirsowasvonegal.ka.KAMenu;
 
 import javax.swing.*;
 
@@ -15,7 +16,7 @@ public class Main {
             if(input == 1) {
                 DEAMenu.open();
             } else if(input == 2) {
-
+                KAMenu.open();
             } else {
                 JOptionPane.showMessageDialog(null, "Bitte gebe nur 1 oder 2 ein!");
             }
