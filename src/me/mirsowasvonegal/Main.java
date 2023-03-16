@@ -20,6 +20,7 @@ public class Main {
             } else {
                 JOptionPane.showMessageDialog(null, "Bitte gebe nur 1 oder 2 ein!");
             }
+
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Bitte gebe nur Ganzzahlen ein!");
         }

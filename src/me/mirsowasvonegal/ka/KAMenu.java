@@ -1,7 +1,5 @@
 package me.mirsowasvonegal.ka;
 
-import me.mirsowasvonegal.dea.DEA;
-import me.mirsowasvonegal.dea.DEAPath;
 import me.mirsowasvonegal.utils.Utils;
 
 import javax.swing.*;
@@ -12,8 +10,8 @@ public class KAMenu {
     public static void open() {
         try {
             int input = Integer.parseInt(JOptionPane.showInputDialog(
-                            "Was willst du machen?\n" +
-                            "1. Einen statischen Automaten benutzen\n" +
+                    "Was willst du machen? \n" +
+                            "1. Einen statischen Automaten benutzen \n" +
                             "2. Einen neuen Automaten erstellen"));
             if(input == 1) {
                 openStaticKA();
@@ -57,56 +55,11 @@ public class KAMenu {
 
     private static void openVariableKA() {
         try {
-            int stateCount = Integer.parseInt(JOptionPane.showInputDialog("Wie viele Zustände willst du haben? (Ganzzahl)"));
-            if(stateCount < 1) {
-                JOptionPane.showMessageDialog(null,"Du brauchst mindestens einen Zustand!");
-                return;
-            }
-            StringBuilder stateList = new StringBuilder();
-            stateList.append("Deine verfügbaren Zustände: \n");
-            for (int i = 0; i < stateCount; i++) {
-                stateList.append("\n- ").append(i);
-            }
-            JOptionPane.showMessageDialog(null,stateList.toString());
-            int startState = Integer.parseInt(JOptionPane.showInputDialog("Welcher Zustand soll dein Startzustand sein? (Ganzzahl)"));
-            if(stateCount < startState) {
-                JOptionPane.showMessageDialog(null,"Dein Startzustand muss in deiner Zustandsliste vorhanden sein!");
-                return;
-            }
-            Set<Integer> endStates = Utils.stringArrayToIntSet(JOptionPane.showInputDialog("Bitte gebe deine Endzustände an. (Mit Leertaste)").split(" "));
-            if(stateCount < Collections.max(endStates)) {
-                JOptionPane.showMessageDialog(null, "Deine Endzustände müssen eine Teilmenge der Zustände sein! (Ganzzahl)");
-                return;
-            }
+            int stateCount = inputStateCount();
+            int startState = inputStartState(stateCount);
+            Set<Integer> endStates = inputEndStates(stateCount);
             String[] terminals = JOptionPane.showInputDialog("Bitte gebe deine verschiedenen TerminalSymbole ein. (Mit Leertaste)").split(" ");
-            ArrayList<KAPath> paths = new ArrayList<>();
-
-            int pathCount = Integer.parseInt(JOptionPane.showInputDialog("Wie viele Pfade willst du haben? (Ganzzahl)"));
-            if(pathCount < 1) {
-                JOptionPane.showMessageDialog(null,"Du brauchst mindestens einen Pfad!");
-                return;
-            }
-            for (int i = 0; i < pathCount; i++) {
-                String[] pathString = JOptionPane.showInputDialog(
-                                "Deine Eingabe soll so Aussehen: \n" +
-                                "Zustand: Aktueller Zustand\n" +
-                                "Terminalsymbol: a, b, usw. (Lambda mit X)\n" +
-                                "Keller: Oberstes Keller Element. Entweder a, b, usw. oder k0\n" +
-                                "Neuer Zustand: In den Zustand soll gegangen werden\n" +
-                                "ADD/DELETE: Fügt etwas auf den Stack hinzu oder nimmt etwas runter.\n\n" +
-                                "Aktueller Pfad: " + (i + 1) + "/" + pathCount +"\n" +
-                                "<Zustand> <Terminalsymbol> <Keller> <Neuer Zustand> <ADD/DELETE>").split(" ");
-                if(pathString.length != 5) {
-                    JOptionPane.showMessageDialog(null,"Du musst alle Parameter angeben!");
-                    return;
-                }
-                int fromState = Integer.parseInt(pathString[0]);
-                String terminal = pathString[1].replace("X", "");
-                String top = pathString[2];
-                int toState = Integer.parseInt(pathString[3]);
-                KAPath.Action action = pathString[4].equals("ADD") ? KAPath.Action.ADD : KAPath.Action.DELETE;
-                paths.add(new KAPath(fromState, toState, terminal, top, action));
-            }
+            ArrayList<KAPath> paths = inputPaths();
 
             KA ka = new KA(stateCount, startState, endStates, new HashSet<>(Arrays.asList(terminals)), paths);
 
@@ -122,6 +75,97 @@ public class KAMenu {
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Bitte gebe nur Ganzzahlen ein!");
+        }
+    }
+
+    private static ArrayList<KAPath> inputPaths() {
+        ArrayList<KAPath> paths = new ArrayList<>();
+        int pathCount = Integer.parseInt(JOptionPane.showInputDialog("Wie viele Pfade willst du haben? (Ganzzahl)"));
+        if(pathCount < 1) {
+            JOptionPane.showMessageDialog(null,"Du brauchst mindestens einen Pfad!");
+            return inputPaths();
+        }
+        for (int i = 0; i < pathCount; i++) {
+            paths.add(inputPath(i, pathCount));
+        }
+        return paths;
+    }
+
+    private static KAPath inputPath(int i, int pathCount) {
+        String[] pathString = JOptionPane.showInputDialog(
+                "Deine Eingabe soll so Aussehen: \n" +
+                        "Zustand: Aktueller Zustand\n" +
+                        "Terminalsymbol: a, b, usw. (Lambda mit X)\n" +
+                        "Keller: Oberstes Keller Element. Entweder a, b, usw. oder k0\n" +
+                        "Neuer Zustand: In den Zustand soll gegangen werden\n" +
+                        "ADD: Fügt etwas auf den Stack hinzu.\n" +
+                        "DELETE: Nimmt etwas vom Stack runter.\n" +
+                        "NOTHING: Es passiert nichts.\n" +
+                        "Aktueller Pfad: " + (i + 1) + "/" + pathCount +"\n" +
+                        "<Zustand> <Terminalsymbol> <Keller> <Neuer Zustand> <ADD/DELETE/NOTHING>").split(" ");
+        if(pathString.length != 5) {
+            JOptionPane.showMessageDialog(null,"Du musst alle Parameter angeben!");
+            return inputPath(i, pathCount);
+        }
+        int fromState = Integer.parseInt(pathString[0]);
+        String terminal = pathString[1].replace("X", "");
+        String top = pathString[2];
+        int toState = Integer.parseInt(pathString[3]);
+        try {
+            KAPath.Action action = KAPath.Action.valueOf(pathString[4]);
+            return new KAPath(fromState, toState, terminal, top, action);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Du musst eine gültige Action verwenden! (ADD/DELETE/NOTHING)");
+            return inputPath(i, pathCount);
+        }
+    }
+
+    private static int inputStateCount() {
+        try {
+            int stateCount = Integer.parseInt(JOptionPane.showInputDialog("Wie viele Zustände willst du haben? (Ganzzahl)"));
+            if (stateCount < 1) {
+                JOptionPane.showMessageDialog(null, "Du brauchst mindestens einen Zustand!");
+                return inputStateCount();
+            }
+            StringBuilder stateList = new StringBuilder();
+            stateList.append("Deine verfügbaren Zustände: \n");
+            for (int i = 0; i < stateCount; i++) {
+                stateList.append("\n- ").append(i);
+            }
+            JOptionPane.showMessageDialog(null, stateList.toString());
+
+            return stateCount;
+        } catch (NumberFormatException e) {
+            System.out.println("Bitte nur Zahlen eingeben!");
+            return inputStateCount();
+        }
+    }
+
+    private static int inputStartState(int stateCount) {
+        try {
+            int startState = Integer.parseInt(JOptionPane.showInputDialog("Welcher Zustand soll dein Startzustand sein? (Ganzzahl)"));
+            if (stateCount < startState) {
+                JOptionPane.showMessageDialog(null, "Dein Startzustand muss in deiner Zustandsliste vorhanden sein!");
+                return inputStartState(stateCount);
+            }
+            return startState;
+        } catch (NumberFormatException e) {
+            System.out.println("Bitte nur Zahlen eingeben!");
+            return inputStartState(stateCount);
+        }
+    }
+
+    private static Set<Integer> inputEndStates(int stateCount) {
+        try {
+            Set<Integer> endStates = Utils.stringArrayToIntSet(JOptionPane.showInputDialog("Bitte gebe deine Endzustände an. (Mit Leertaste)").split(" "));
+            if(stateCount < Collections.max(endStates)) {
+                JOptionPane.showMessageDialog(null, "Deine Endzustände müssen eine Teilmenge der Zustände sein! (Ganzzahl)");
+                return inputEndStates(stateCount);
+            }
+            return endStates;
+        } catch (NumberFormatException e) {
+            System.out.println("Bitte nur Zahlen eingeben!");
+            return inputEndStates(stateCount);
         }
     }
 

@@ -35,4 +35,4 @@ Keller Automat:
         0 a b 0 DELETE
         0 b b 0 ADD
         0 b a 0 DELETE
-        0 X k0 1 ADD
+        b 0 X k0 1 ADD

@@ -10,7 +10,8 @@ public class KAPath {
 
     public enum Action {
         ADD,
-        DELETE
+        DELETE,
+        NOTHING
     }
 
     public int getFromState() {

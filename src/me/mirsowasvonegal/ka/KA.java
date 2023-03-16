@@ -42,7 +42,7 @@ public class KA {
             if(path.getAction() == KAPath.Action.DELETE) {
                 if(stack.top().toString().equals("k0")) return false;
                 stack.pop();
-            } else {
+            } else if(path.getAction() == KAPath.Action.ADD) {
                 if(characters[i].equals("")) return false;
                 stack.push(characters[i]);
             }

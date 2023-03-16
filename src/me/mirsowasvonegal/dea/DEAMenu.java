@@ -56,37 +56,15 @@ public class DEAMenu {
 
     private static void openVariableDEA() {
         try {
-            int stateCount = Integer.parseInt(JOptionPane.showInputDialog("Wie viele Zustände willst du haben? (Ganzzahl)"));
-            if(stateCount < 1) {
-                JOptionPane.showMessageDialog(null,"Du brauchst mindestens einen Zustand!");
-                return;
-            }
-            StringBuilder stateList = new StringBuilder();
-            stateList.append("Deine verfügbaren Zustände: \n");
-            for (int i = 0; i < stateCount; i++) {
-                stateList.append("\n- ").append(i);
-            }
-            JOptionPane.showMessageDialog(null,stateList.toString());
-            int startState = Integer.parseInt(JOptionPane.showInputDialog("Welcher Zustand soll dein Startzustand sein? (Ganzzahl)"));
-            if(stateCount < startState) {
-                JOptionPane.showMessageDialog(null,"Dein Startzustand muss in deiner Zustandsliste vorhanden sein!");
-                return;
-            }
-            Set<Integer> endStates = Utils.stringArrayToIntSet(JOptionPane.showInputDialog("Bitte gebe deine Endzustände an. (Mit Leertaste)").split(" "));
-            if(stateCount < Collections.max(endStates)) {
-                JOptionPane.showMessageDialog(null, "Deine Endzustände müssen eine Teilmenge der Zustände sein! (Ganzzahl)");
-                return;
-            }
+            int stateCount = inputStateCount();
+            int startState = inputStartState(stateCount);
+            Set<Integer> endStates = inputEndStates(stateCount);
             String[] terminals = JOptionPane.showInputDialog("Bitte gebe deine verschiedenen TerminalSymbole ein. (Mit Leertaste)").split(" ");
             ArrayList<DEAPath> paths = new ArrayList<>();
 
             for (int i = 0; i < stateCount; i++) {
                 for (String terminal : terminals) {
-                    int toState = Integer.parseInt(JOptionPane.showInputDialog(
-                                    "Zustand: " + i + "\n" +
-                                    "Terminal: " + terminal + "\n" +
-                                    "Wohin soll man damit gehen?"));
-                    paths.add(new DEAPath(i, toState, terminal));
+                    paths.add(inputPath(i, terminal));
                 }
             }
 
@@ -104,6 +82,69 @@ public class DEAMenu {
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Bitte gebe nur Ganzzahlen ein!");
+        }
+    }
+
+
+    private static DEAPath inputPath(int i, String terminal) {
+        try {
+            int toState = Integer.parseInt(JOptionPane.showInputDialog(
+                    "Zustand: " + i + "\n" +
+                            "Terminal: " + terminal + "\n" +
+                            "Wohin soll man damit gehen?"));
+            return new DEAPath(i, toState, terminal);
+        } catch (NumberFormatException e) {
+            System.out.println("Bitte nur Zahlen eingeben!");
+            return inputPath(i, terminal);
+        }
+    }
+
+    private static int inputStateCount() {
+        try {
+            int stateCount = Integer.parseInt(JOptionPane.showInputDialog("Wie viele Zustände willst du haben? (Ganzzahl)"));
+            if (stateCount < 1) {
+                JOptionPane.showMessageDialog(null, "Du brauchst mindestens einen Zustand!");
+                return inputStateCount();
+            }
+            StringBuilder stateList = new StringBuilder();
+            stateList.append("Deine verfügbaren Zustände: \n");
+            for (int i = 0; i < stateCount; i++) {
+                stateList.append("\n- ").append(i);
+            }
+            JOptionPane.showMessageDialog(null, stateList.toString());
+
+            return stateCount;
+        } catch (NumberFormatException e) {
+            System.out.println("Bitte nur Zahlen eingeben!");
+            return inputStateCount();
+        }
+    }
+
+    private static int inputStartState(int stateCount) {
+        try {
+            int startState = Integer.parseInt(JOptionPane.showInputDialog("Welcher Zustand soll dein Startzustand sein? (Ganzzahl)"));
+            if (stateCount < startState) {
+                JOptionPane.showMessageDialog(null, "Dein Startzustand muss in deiner Zustandsliste vorhanden sein!");
+                return inputStartState(stateCount);
+            }
+            return startState;
+        } catch (NumberFormatException e) {
+            System.out.println("Bitte nur Zahlen eingeben!");
+            return inputStartState(stateCount);
+        }
+    }
+
+    private static Set<Integer> inputEndStates(int stateCount) {
+        try {
+            Set<Integer> endStates = Utils.stringArrayToIntSet(JOptionPane.showInputDialog("Bitte gebe deine Endzustände an. (Mit Leertaste)").split(" "));
+            if(stateCount < Collections.max(endStates)) {
+                JOptionPane.showMessageDialog(null, "Deine Endzustände müssen eine Teilmenge der Zustände sein! (Ganzzahl)");
+                return inputEndStates(stateCount);
+            }
+            return endStates;
+        } catch (NumberFormatException e) {
+            System.out.println("Bitte nur Zahlen eingeben!");
+            return inputEndStates(stateCount);
         }
     }
 
