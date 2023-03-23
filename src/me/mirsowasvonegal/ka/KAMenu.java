@@ -28,7 +28,7 @@ public class KAMenu {
     private static void openStaticKA() {
         JOptionPane.showMessageDialog(null, "Dieser Automat hat die Sprache: L(KA)={e^m d c^n b^n a^m}");
         Set<Integer> endStates = new TreeSet<>();
-        endStates.add(1);
+        endStates.add(3);
         Set<String> terminals = new HashSet<>();
         terminals.add("a");
         terminals.add("b");
@@ -48,9 +48,15 @@ public class KAMenu {
         paths.add(new KAPath(0,0, "e", "k0", KAPath.Action.ADD));
         paths.add(new KAPath(0,0, "e", "e", KAPath.Action.ADD));
         paths.add(new KAPath(0,1, "d", "k0", KAPath.Action.NOTHING));
-        paths.add(new KAPath(0,1, "d", "e", KAPath.Action.ADD));
-        paths.add(new KAPath(1,1, "c", "k0", KAPath.Action.NOTHING));
+        paths.add(new KAPath(0,1, "d", "e", KAPath.Action.NOTHING));
+        paths.add(new KAPath(1,1, "c", "k0", KAPath.Action.ADD));
         paths.add(new KAPath(1,1, "c", "e", KAPath.Action.ADD));
+        paths.add(new KAPath(1,1, "c", "c", KAPath.Action.ADD));
+        paths.add(new KAPath(1,2, "b", "c", KAPath.Action.DELETE));
+        paths.add(new KAPath(2,2, "b", "c", KAPath.Action.DELETE));
+        paths.add(new KAPath(2,2, "a", "e", KAPath.Action.DELETE));
+        paths.add(new KAPath(2,3, "", "k0", KAPath.Action.NOTHING));
+
         KA ka = new KA(2, 0, endStates, terminals, paths);
         while(true) {
             String input = JOptionPane.showInputDialog("Eingabe eines Wortes: ");
