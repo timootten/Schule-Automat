@@ -26,20 +26,31 @@ public class KAMenu {
     }
 
     private static void openStaticKA() {
-        JOptionPane.showMessageDialog(null, "Dieser Automat hat die Sprache: L(KA)=w besteht aus gleich vielen a's und b's");
+        JOptionPane.showMessageDialog(null, "Dieser Automat hat die Sprache: L(KA)={e^m d c^n b^n a^m}");
         Set<Integer> endStates = new TreeSet<>();
         endStates.add(1);
         Set<String> terminals = new HashSet<>();
         terminals.add("a");
         terminals.add("b");
+        terminals.add("c");
+        terminals.add("d");
+        terminals.add("e");
         ArrayList<KAPath> paths = new ArrayList<>();
+        /*
         paths.add(new KAPath(0, 0, "a", "k0", KAPath.Action.ADD));
         paths.add(new KAPath(0, 0, "b", "k0", KAPath.Action.ADD));
         paths.add(new KAPath(0, 0, "a", "a", KAPath.Action.ADD));
-        paths.add(new KAPath(0, 0, "a", "b", KAPath.Action.DELETE));
+        paths.add(new KAPath(0, 0, "a", "b", KAPath.Action.DELETE)); // gleich viele a's und b's
         paths.add(new KAPath(0, 0, "b", "b", KAPath.Action.ADD));
         paths.add(new KAPath(0, 0, "b", "a", KAPath.Action.DELETE));
         paths.add(new KAPath(0, 1, "", "k0", KAPath.Action.ADD));
+        */
+        paths.add(new KAPath(0,0, "e", "k0", KAPath.Action.ADD));
+        paths.add(new KAPath(0,0, "e", "e", KAPath.Action.ADD));
+        paths.add(new KAPath(0,1, "d", "k0", KAPath.Action.NOTHING));
+        paths.add(new KAPath(0,1, "d", "e", KAPath.Action.ADD));
+        paths.add(new KAPath(1,1, "c", "k0", KAPath.Action.NOTHING));
+        paths.add(new KAPath(1,1, "c", "e", KAPath.Action.ADD));
         KA ka = new KA(2, 0, endStates, terminals, paths);
         while(true) {
             String input = JOptionPane.showInputDialog("Eingabe eines Wortes: ");
@@ -59,6 +70,7 @@ public class KAMenu {
             int startState = inputStartState(stateCount);
             Set<Integer> endStates = inputEndStates(stateCount);
             String[] terminals = JOptionPane.showInputDialog("Bitte gebe deine verschiedenen TerminalSymbole ein. (Mit Leertaste)").split(" ");
+            if(terminals.length == 0) System.exit(0);
             ArrayList<KAPath> paths = inputPaths();
 
             KA ka = new KA(stateCount, startState, endStates, new HashSet<>(Arrays.asList(terminals)), paths);
@@ -80,7 +92,9 @@ public class KAMenu {
 
     private static ArrayList<KAPath> inputPaths() {
         ArrayList<KAPath> paths = new ArrayList<>();
-        int pathCount = Integer.parseInt(JOptionPane.showInputDialog("Wie viele Pfade willst du haben? (Ganzzahl)"));
+        String input = JOptionPane.showInputDialog("Wie viele Pfade willst du haben? (Ganzzahl)");
+        if(input == null || input.equals("")) System.exit(0);
+        int pathCount = Integer.parseInt(input);
         if(pathCount < 1) {
             JOptionPane.showMessageDialog(null,"Du brauchst mindestens einen Pfad!");
             return inputPaths();
@@ -103,6 +117,7 @@ public class KAMenu {
                         "NOTHING: Es passiert nichts.\n" +
                         "Aktueller Pfad: " + (i + 1) + "/" + pathCount +"\n" +
                         "<Zustand> <Terminalsymbol> <Keller> <Neuer Zustand> <ADD/DELETE/NOTHING>").split(" ");
+        if(pathString.length == 0) System.exit(0);
         if(pathString.length != 5) {
             JOptionPane.showMessageDialog(null,"Du musst alle Parameter angeben!");
             return inputPath(i, pathCount);
@@ -115,14 +130,16 @@ public class KAMenu {
             KAPath.Action action = KAPath.Action.valueOf(pathString[4]);
             return new KAPath(fromState, toState, terminal, top, action);
         } catch (IllegalArgumentException e) {
-            System.out.println("Du musst eine gültige Action verwenden! (ADD/DELETE/NOTHING)");
+            JOptionPane.showMessageDialog(null,"Du musst eine gültige Action verwenden! (ADD/DELETE/NOTHING)");
             return inputPath(i, pathCount);
         }
     }
 
     private static int inputStateCount() {
         try {
-            int stateCount = Integer.parseInt(JOptionPane.showInputDialog("Wie viele Zustände willst du haben? (Ganzzahl)"));
+            String input = JOptionPane.showInputDialog("Wie viele Zustände willst du haben? (Ganzzahl)");
+            if(input == null || input.equals("")) System.exit(0);
+            int stateCount = Integer.parseInt(input);
             if (stateCount < 1) {
                 JOptionPane.showMessageDialog(null, "Du brauchst mindestens einen Zustand!");
                 return inputStateCount();
@@ -136,21 +153,23 @@ public class KAMenu {
 
             return stateCount;
         } catch (NumberFormatException e) {
-            System.out.println("Bitte nur Zahlen eingeben!");
+            JOptionPane.showMessageDialog(null,"Bitte nur Zahlen eingeben!");
             return inputStateCount();
         }
     }
 
     private static int inputStartState(int stateCount) {
         try {
-            int startState = Integer.parseInt(JOptionPane.showInputDialog("Welcher Zustand soll dein Startzustand sein? (Ganzzahl)"));
+            String input = JOptionPane.showInputDialog("Welcher Zustand soll dein Startzustand sein? (Ganzzahl)");
+            if(input == null || input.equals("")) System.exit(0);
+            int startState = Integer.parseInt(input);
             if (stateCount < startState) {
                 JOptionPane.showMessageDialog(null, "Dein Startzustand muss in deiner Zustandsliste vorhanden sein!");
                 return inputStartState(stateCount);
             }
             return startState;
         } catch (NumberFormatException e) {
-            System.out.println("Bitte nur Zahlen eingeben!");
+            JOptionPane.showMessageDialog(null,"Bitte nur Zahlen eingeben!");
             return inputStartState(stateCount);
         }
     }
@@ -164,7 +183,7 @@ public class KAMenu {
             }
             return endStates;
         } catch (NumberFormatException e) {
-            System.out.println("Bitte nur Zahlen eingeben!");
+            JOptionPane.showMessageDialog(null,"Bitte nur Zahlen eingeben!");
             return inputEndStates(stateCount);
         }
     }

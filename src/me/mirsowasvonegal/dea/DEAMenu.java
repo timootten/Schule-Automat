@@ -94,14 +94,16 @@ public class DEAMenu {
                             "Wohin soll man damit gehen?"));
             return new DEAPath(i, toState, terminal);
         } catch (NumberFormatException e) {
-            System.out.println("Bitte nur Zahlen eingeben!");
+            JOptionPane.showMessageDialog(null,"Bitte nur Zahlen eingeben!");
             return inputPath(i, terminal);
         }
     }
 
     private static int inputStateCount() {
         try {
-            int stateCount = Integer.parseInt(JOptionPane.showInputDialog("Wie viele Zustände willst du haben? (Ganzzahl)"));
+            String input = JOptionPane.showInputDialog("Wie viele Zustände willst du haben? (Ganzzahl)");
+            if(input == null || input.equals("")) System.exit(0);
+            int stateCount = Integer.parseInt(input);
             if (stateCount < 1) {
                 JOptionPane.showMessageDialog(null, "Du brauchst mindestens einen Zustand!");
                 return inputStateCount();
@@ -115,21 +117,23 @@ public class DEAMenu {
 
             return stateCount;
         } catch (NumberFormatException e) {
-            System.out.println("Bitte nur Zahlen eingeben!");
+            JOptionPane.showMessageDialog(null,"Bitte nur Zahlen eingeben!");
             return inputStateCount();
         }
     }
 
     private static int inputStartState(int stateCount) {
         try {
-            int startState = Integer.parseInt(JOptionPane.showInputDialog("Welcher Zustand soll dein Startzustand sein? (Ganzzahl)"));
+            String input = JOptionPane.showInputDialog("Welcher Zustand soll dein Startzustand sein? (Ganzzahl)");
+            if(input == null || input.equals("")) System.exit(0);
+            int startState = Integer.parseInt(input);
             if (stateCount < startState) {
                 JOptionPane.showMessageDialog(null, "Dein Startzustand muss in deiner Zustandsliste vorhanden sein!");
                 return inputStartState(stateCount);
             }
             return startState;
         } catch (NumberFormatException e) {
-            System.out.println("Bitte nur Zahlen eingeben!");
+            JOptionPane.showMessageDialog(null,"Bitte nur Zahlen eingeben!");
             return inputStartState(stateCount);
         }
     }
@@ -143,7 +147,7 @@ public class DEAMenu {
             }
             return endStates;
         } catch (NumberFormatException e) {
-            System.out.println("Bitte nur Zahlen eingeben!");
+            JOptionPane.showMessageDialog(null,"Bitte nur Zahlen eingeben!");
             return inputEndStates(stateCount);
         }
     }
