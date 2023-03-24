@@ -9,19 +9,24 @@ public class DEAMenu {
 
     public static void open() {
         try {
-            int input = Integer.parseInt(JOptionPane.showInputDialog(
+            String input = JOptionPane.showInputDialog(
                     "Was willst du machen?\n" +
                             "1. Einen statischen Automaten benutzen\n" +
-                            "2. Einen neuen Automaten erstellen"));
-            if(input == 1) {
+                            "2. Einen neuen Automaten erstellen");
+            if(input == null || input.equals("")) return;
+
+            int number = Integer.parseInt(input);
+            if(number == 1) {
                 openStaticDEA();
-            } else if(input == 2) {
+            } else if(number == 2) {
                 openVariableDEA();
             } else {
                 JOptionPane.showMessageDialog(null, "Bitte gebe nur 1 oder 2 ein!");
+                open();
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Bitte gebe nur Ganzzahlen ein!");
+            open();
         }
     }
 

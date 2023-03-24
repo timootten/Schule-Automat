@@ -9,24 +9,29 @@ public class KAMenu {
 
     public static void open() {
         try {
-            int input = Integer.parseInt(JOptionPane.showInputDialog(
-                    "Was willst du machen? \n" +
-                            "1. Einen statischen Automaten benutzen \n" +
-                            "2. Einen neuen Automaten erstellen"));
-            if(input == 1) {
+            String input = JOptionPane.showInputDialog(
+                    "Was willst du machen?\n" +
+                            "1. Einen statischen Automaten benutzen\n" +
+                            "2. Einen neuen Automaten erstellen");
+            if(input == null || input.equals("")) return;
+
+            int number = Integer.parseInt(input);
+            if(number == 1) {
                 openStaticKA();
-            } else if(input == 2) {
+            } else if(number == 2) {
                 openVariableKA();
             } else {
                 JOptionPane.showMessageDialog(null, "Bitte gebe nur 1 oder 2 ein!");
+                open();
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Bitte gebe nur Ganzzahlen ein!");
+            open();
         }
     }
 
     private static void openStaticKA() {
-        JOptionPane.showMessageDialog(null, "Dieser Automat hat die Sprache: L(KA)={e^m d c^n b^n a^m}");
+        JOptionPane.showMessageDialog(null, "Dieser Automat hat die Sprache: L(KA)={e^m d c^n b^n a^m} | n >= 1, m >= 0 ");
         Set<Integer> endStates = new TreeSet<>();
         endStates.add(3);
         Set<String> terminals = new HashSet<>();
@@ -36,15 +41,16 @@ public class KAMenu {
         terminals.add("d");
         terminals.add("e");
         ArrayList<KAPath> paths = new ArrayList<>();
-        /*
+        /*  L(KA)=w besteht aus gleich vielen a's und b's
         paths.add(new KAPath(0, 0, "a", "k0", KAPath.Action.ADD));
         paths.add(new KAPath(0, 0, "b", "k0", KAPath.Action.ADD));
         paths.add(new KAPath(0, 0, "a", "a", KAPath.Action.ADD));
-        paths.add(new KAPath(0, 0, "a", "b", KAPath.Action.DELETE)); // gleich viele a's und b's
+        paths.add(new KAPath(0, 0, "a", "b", KAPath.Action.DELETE));
         paths.add(new KAPath(0, 0, "b", "b", KAPath.Action.ADD));
         paths.add(new KAPath(0, 0, "b", "a", KAPath.Action.DELETE));
         paths.add(new KAPath(0, 1, "", "k0", KAPath.Action.ADD));
         */
+        //  (KA)={e^m d c^n b^n a^m}
         paths.add(new KAPath(0,0, "e", "k0", KAPath.Action.ADD));
         paths.add(new KAPath(0,0, "e", "e", KAPath.Action.ADD));
         paths.add(new KAPath(0,1, "d", "k0", KAPath.Action.NOTHING));
@@ -112,17 +118,21 @@ public class KAMenu {
     }
 
     private static KAPath inputPath(int i, int pathCount) {
-        String[] pathString = JOptionPane.showInputDialog(
+        String input = JOptionPane.showInputDialog(
                 "Deine Eingabe soll so Aussehen: \n" +
-                        "Zustand: Aktueller Zustand\n" +
-                        "Terminalsymbol: a, b, usw. (Lambda mit X)\n" +
-                        "Keller: Oberstes Keller Element. Entweder a, b, usw. oder k0\n" +
+                        "Aktueller Zustand: Der aktueller Zustand\n" +
+                        "Terminalsymbol: a, b, usw. (Lambda/λ mit X)\n" +
+                        "Keller: Oberstes Keller Element. Entweder a, b, usw. Nutze k0 wenn der Keller leer sein soll.\n" +
                         "Neuer Zustand: In den Zustand soll gegangen werden\n" +
                         "ADD: Fügt etwas auf den Stack hinzu.\n" +
                         "DELETE: Nimmt etwas vom Stack runter.\n" +
                         "NOTHING: Es passiert nichts.\n" +
                         "Aktueller Pfad: " + (i + 1) + "/" + pathCount +"\n" +
-                        "<Zustand> <Terminalsymbol> <Keller> <Neuer Zustand> <ADD/DELETE/NOTHING>").split(" ");
+                        "<Aktueller Zustand> <Terminalsymbol> <Keller> <Neuer Zustand> <ADD/DELETE/NOTHING>\n\n" +
+                        "Beispiel Eingabe: \n" +
+                        "0 e k0 0 ADD");
+        if(input == null || input.equals("")) System.exit(0);
+        String[] pathString = input.split(" ");
         if(pathString.length == 0) System.exit(0);
         if(pathString.length != 5) {
             JOptionPane.showMessageDialog(null,"Du musst alle Parameter angeben!");
