@@ -19,7 +19,7 @@ Keller Automat:
 
     Statischer Automat:
     
-        Der Statische Automat hat die Sprache: L(KA)=w besteht aus gleich vielen a's und b's
+        Der Statische Automat hat die Sprache: L(KA)={e^m d c^n b^n a^m} | n >= 1, m >= 0
     
     Variabler Automat:
     
@@ -35,4 +35,4 @@ Keller Automat:
         0 a b 0 DELETE
         0 b b 0 ADD
         0 b a 0 DELETE
-        b 0 X k0 1 ADD
+        b 0 X k0 1 NOTHING
